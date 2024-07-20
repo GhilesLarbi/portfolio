@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+:root {
+  --sidebar-width : 20%;
+}
+
 html {
   font-size: 62.5%;
 }
@@ -15,6 +19,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  background-color: #111218;
 }
 
 code {

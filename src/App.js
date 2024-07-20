@@ -1,11 +1,7 @@
 import styles from './App.module.css'
+import Header from './components/Header/Header'
 import Sidebar from './components/Sidebar/Sidebar'
-import Home from './components/Pages/Home/Home'
-import About from './components/Pages/About/About'
-import Contact from './components/Pages/Contact/Contact'
-import Experience from './components/Pages/Experience/Experience'
-import Projects from './components/Pages/Projects/Projects'
-import Techs from './components/Pages/Techs/Techs'
+import Page from './components/Pages/Page'
 
 import {useState} from 'react'
 
@@ -16,30 +12,11 @@ function App() {
     setCurrentPage(page)
   }
 
-
-  const renderPage = () => {
-    switch (currentPage) {
-      case "Home":
-        return <Home />;
-      case "Projects":
-        return <Projects />;
-      case "Techs":
-        return <Techs />
-      case "Experience":
-        return <Experience />;
-      case "Contact":
-        return <Contact />;
-      case "About":
-        return <About />;
-      default:
-        return <Home />;
-    }
-  }
-
   return (
     <div className={styles.app}>
+      <Header />
       <Sidebar currentPage={currentPage} onPageChange={handlePageChange} />
-      {renderPage()}
+      <Page currentPage={currentPage} />
     </div>
   );
 }

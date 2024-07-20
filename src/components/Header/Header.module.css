@@ -1,0 +1,18 @@
+.header {
+    position: fixed;
+    width: calc(100% - var(--sidebar-width));
+    top: 0;
+    right: 0;
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 2rem;
+}
+
+
+.header button {
+    background: none;
+    border: none;
+    font-size: 1.8rem;
+    color: rgba(255, 255, 255, 0.6);
+}
