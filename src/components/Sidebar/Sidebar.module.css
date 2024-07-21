@@ -2,7 +2,8 @@
 .sidebar {
     height: 100vh;
     width: var(--sidebar-width);
-    background-color: #131820;
+    /* background-color: #131820; */
+    background-image: linear-gradient(90deg, #131820 50%, transparent 100%);
     padding: 4rem 2rem 4rem 10rem;
     position: fixed;
     top: 0;
@@ -10,6 +11,8 @@
 
     display: flex;
     flex-direction: column;
+    box-shadow: .0rem 0 4rem rgba(19, 24, 32, 0.2);
+    /* border-right: 2px solid rgba(255, 255, 255, 0.06); */
 }
 
 .logo{
@@ -50,12 +53,23 @@
     color: rgba(255, 255, 255, 0.8);
 }
 
-.navBtn svg {
+
+.navBtn .navBtn_icon {
+    color: white;
+    opacity: .2;
+}
+
+.navBtn.active .navBtn_icon {
+    opacity: .8;
+}
+
+
+.navBtn .navBtn_arrow {
     display: none;
     color: rgba(255, 255, 255, .5);
 }
 
-.navBtn.active svg {
+.navBtn.active .navBtn_arrow {
     display: block;
 }
 

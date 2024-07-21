@@ -8,6 +8,8 @@ import Experience from './Experience/Experience'
 import Projects from './Projects/Projects'
 import Techs from './Techs/Techs'
 
+import { Bg } from "../Icons";
+
 function Page({currentPage}){
 
     const renderPage = () => {
@@ -32,6 +34,7 @@ function Page({currentPage}){
 
     return (
         <div className={styles.page}>
+            <Bg className={styles.bgpage} />
             {renderPage()}
         </div>
     )

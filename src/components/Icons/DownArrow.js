@@ -1,24 +1,24 @@
 import * as React from "react";
-const SvgArrow = (props) => (
+const SvgDownArrow = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width={44.5}
-    height={13}
+    width={6}
+    height={4}
     fill="none"
-    viewBox="437.5 290.5 44.5 13"
+    viewBox="3829 121.5 6 4"
     {...props}
   >
-    <path d="m475 301.5 5-4.5-5-4.5m5 4.5h-40.5" />
+    <path d="m3829 121.5 3 4 3-4" />
     <path
-      d="m475 301.5 5-4.5-5-4.5m5 4.5h-40.5"
+      d="m3829 121.5 3 4 3-4"
       style={{
         fill: "none",
         strokeWidth: 1,
         stroke: "currentColor",
-        strokeOpacity: 0.5,
+        strokeOpacity: 1,
         strokeLinecap: "round",
       }}
     />
   </svg>
 );
-export default SvgArrow;
+export default SvgDownArrow;

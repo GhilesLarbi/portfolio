@@ -3,10 +3,11 @@
     width: calc(100% - var(--sidebar-width));
     top: 0;
     right: 0;
-    padding: 2rem 4rem;
+    padding: 3rem 4rem;
     display: flex;
     justify-content: flex-end;
-    gap: 2rem;
+    gap: 3rem;
+    z-index: 100;
 }
 
 
@@ -15,4 +16,19 @@
     border: none;
     font-size: 1.8rem;
     color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+}
+
+.lang_btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.theme_btn {
+}
+
+.theme_btn svg {
+    color: white;
 }

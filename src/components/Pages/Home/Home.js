@@ -2,10 +2,14 @@ import React from "react";
 import styles from './Home.module.css'
 
 import {Arrow as ArrowIcon} from "../../Icons";
+import { Home as HomeIcon } from "../../Icons";
 
 function Home(){
     return <section className={styles.section}>
-        <p className={styles.title}>Home</p>
+        <p className={styles.title}>
+            {/* <HomeIcon /> */}
+            <span>Home</span>
+        </p>
         <h1 className={styles.header}>Hi I'am <span>"Ghiles Larbi"</span> <br/>
         let me <span>design</span> your website</h1>
         <p className={styles.body}>Passionate web developer and designer, dedicated to crafting exceptional digital experiences. 

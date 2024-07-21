@@ -1,8 +1,22 @@
 .page {
-    padding: 8rem;
-    padding-top: 10rem;
     margin-left: var(--sidebar-width);
-    width: 100%;
+    overflow-x: hidden;
     color: rgba(255, 255, 255, 0.5);
     font-size: 2rem;
+    position: relative;
+}
+
+.bgpage {
+    position: absolute;
+    z-index: -1;
+    height: 100vh;
+    right: -20%;
+    top: -10%;
+    opacity: .9;
+    filter: blur(.3rem);
+}
+
+.page > * {
+    padding: 8rem;
+    padding-top: 10rem;
 }

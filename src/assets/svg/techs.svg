@@ -1,0 +1,6 @@
+<svg width="32" xmlns="http://www.w3.org/2000/svg" height="32" fill="none">
+    <rect rx="0" ry="0" width="64" height="64" class="frame-background" />
+    <path d="M4 10v12l12 6 12-6V10L16 4 4 10Zm12 6 12-6M16 28V16m12 6-12-6M4 22l12-6M4 10l12 6m0-12v12"/>
+    <path d="M4 10v12l12 6 12-6V10L16 4 4 10Zm12 6 12-6M16 28V16m12 6-12-6M4 22l12-6M4 10l12 6m0-12v12"
+        style="fill: none; stroke-width: 1; stroke: currentColor; stroke-opacity: 1;"/>
+</svg>
