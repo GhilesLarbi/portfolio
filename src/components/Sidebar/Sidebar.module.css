@@ -3,10 +3,13 @@
     height: 100vh;
     width: var(--sidebar-width);
     background-color: #131820;
-    padding: 2rem 2rem 2rem 10rem;
+    padding: 4rem 2rem 4rem 10rem;
     position: fixed;
     top: 0;
     left: 0;
+
+    display: flex;
+    flex-direction: column;
 }
 
 .logo{
@@ -15,29 +18,53 @@
   
 .nav {
     margin-top: 6rem;
+    flex-grow: 1;
 }
 
 .nav ul {
     list-style-type: none;
 }
   
-.menuItem {
+.navBtn {
+    background: none;
+    border: none;
     font-size: 2rem;
-    padding: 10px 15px;
+    padding: 1.2rem 0;
+
     cursor: pointer;
     transition: background-color 0.3s;
     color: rgba(255, 255, 255, 0.2);
+
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
 }
 
-.menuItem:hover {
+.navBtn:hover {
     color: rgba(255, 255, 255, 0.5);
 }
 
-.active {
+.navBtn.active {
     font-weight: bold;
     color: rgba(255, 255, 255, 0.8);
 }
 
-.active:hover {
+.navBtn svg {
+    display: none;
+    color: rgba(255, 255, 255, .5);
+}
+
+.navBtn.active svg {
+    display: block;
+}
+
+.navBtn.active:hover {
     color: rgba(255, 255, 255, 0.9);
+}
+
+.socialIcons ul {
+    display: flex;
+    gap: 2rem;
+    list-style-type: none;
 }

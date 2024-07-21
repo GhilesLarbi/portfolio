@@ -1,0 +1,87 @@
+.section {
+    margin-bottom: -10rem;
+}
+
+.title {
+    background-color: rgba(88, 180, 211, 0.1);
+    padding: 1rem 1.4rem;
+    padding-right: 2.4rem;
+    border-radius: 0 10rem 10rem 0;
+    width: min-content;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+
+.header {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 4.8rem;
+    text-transform: uppercase;
+    margin-bottom: 4rem;
+    line-height: 1;
+    font-weight: 800;
+}
+
+.header span {
+    color: #58b5d3;
+}
+
+.body {
+    color: rgba(255, 255, 255, 0.6);
+    width: 62%;
+    font-size: 2.4rem;
+    margin-bottom: 10rem;
+    line-height: 1.5;
+}
+
+.button {
+    font-size: 2.2rem;
+    background: #58b5d3;
+    padding: 1.2rem 4rem 1.2rem 2rem;
+    border: none;
+    text-transform: uppercase;
+    border-radius: 0 10rem 10rem 0;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.buttonIcon {
+    /* color: ; */
+}
+
+.terminal {
+    background-color: #141a22;
+    width: 80%;
+    height: 38.8rem;
+    margin-top: 10rem;
+    border-radius: 0 3rem 0 0;
+    overflow: hidden;
+}
+
+.terminalHeader {
+    background-color: rgba(88, 180, 211, 0.1);
+    padding: 1rem 3rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 2rem;
+}
+
+.terminalHeaderCircle {
+    --size: 3rem;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 100%;
+    background-color: rgba(177, 178, 181, 0.4);
+}
+
+.terminalHeaderCircle:nth-child(3) {
+    background-color: #ff6868;
+}
+
+.terminalContent {
+    padding: 2rem 3rem;
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.4)
+}
