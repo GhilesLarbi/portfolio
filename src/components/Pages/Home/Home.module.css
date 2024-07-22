@@ -1,11 +1,14 @@
 .section {
-    /* background-color: red; */
-    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
     height: 100vh;
+    overflow: hidden;
+    padding-bottom: 0;
 }
 
+
 .title {
-    /* background-color: rgba(88, 180, 211, 0.1); */
     padding: 1rem 1.4rem;
     border-radius: 10rem;
     width: min-content;
@@ -27,7 +30,6 @@
     height: 100%;
     background-color: rgba(88, 180, 211, 0.1);
     border-radius: inherit;
-
     position: absolute;
     right: 0;
     top: 0;
@@ -43,8 +45,17 @@
     font-weight: 800;
 }
 
-.header span {
+.name,
+.design {
     color: #58b5d3;
+    display: inline-block;
+    transition: transform 0.3s ease;
+    transform-style: preserve-3d;
+}
+
+.name:hover,
+.design:hover {
+    transform: perspective(500px) rotateX(15deg) rotateY(15deg);
 }
 
 .body {
@@ -68,21 +79,52 @@
     align-items: center;
     cursor: pointer;
     box-shadow: 0 .6rem 0 #185c72;
-    /* border-bottom: 1px solid black; */
+    transition: all 0.3s ease;
+}
+
+.button:hover {
+    background: #6ac5e3;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 0 #185c72;
+}
+
+.button:active {
+    transform: translateY(2px);
+    box-shadow: 0 4px 0 #185c72;
 }
 
 .buttonIcon {
     color: black;
+    transition: transform 0.3s ease;
+}
+
+.button:hover .buttonIcon {
+    transform: translateX(5px);
 }
 
 .terminal {
     background-color: #141a22;
     width: 80%;
-    height: 50rem;
-    margin-top: 10rem;
+    flex-grow: 1;
+    margin-top: 2rem;
     border-radius: 0 3rem 0 0;
     overflow: hidden;
     box-shadow: -1rem 1rem 9rem rgba(0, 0, 0, 0.1);
+    animation: slideUp 0.5s ease-out;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .terminalHeader {
@@ -99,6 +141,7 @@
     height: var(--size);
     border-radius: 100%;
     background-color: rgba(177, 178, 181, 0.4);
+    transition: background-color 0.3s ease;
 }
 
 .terminalHeaderCircle:nth-child(3) {
@@ -106,8 +149,71 @@
     box-shadow: 0 0 3rem #ff6868;
 }
 
+.terminalHeaderCircle:hover {
+    background-color: rgba(177, 178, 181, 0.8);
+}
+
 .terminalContent {
     padding: 2rem 3rem;
     font-size: 2rem;
-    color: rgba(255, 255, 255, 0.4)
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Courier New', Courier, monospace;
+    white-space: pre-wrap;
+    line-height: 1.5;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.prompt {
+    color: #58b5d3;
+    margin-right: 1rem;
+    white-space: nowrap;
+}
+
+.inputLine {
+    display: flex;
+    align-items: center;
+}
+
+.terminalInput {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 2rem;
+    outline: none;
+    width: 100%;
+    caret-color: #58b5d3;
+    padding: 0;
+    margin: 0;
+}
+
+.validCommand {
+    color: #4CAF50;
+}
+
+.invalidCommand {
+    color: #FF5252;
+}
+
+.commandOutput {
+    margin-left: 20px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.cursor {
+    animation: blink 1s step-end infinite;
+    margin-left: 2px;
 }
