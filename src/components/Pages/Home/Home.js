@@ -3,10 +3,13 @@ import styles from './Home.module.css'
 import { Arrow as ArrowIcon } from "../../Icons";
 import { Home as HomeIcon } from "../../Icons";
 
+import FileSystem from '../../Terminal/FileSystem'
+
 function Home() {
     const [commandHistory, setCommandHistory] = useState([]);
     const [currentInput, setCurrentInput] = useState("");
-    const [currentDirectory, setCurrentDirectory] = useState("~");
+    const [fileSystem] = useState(() => new FileSystem());
+    const [currentDirectory, setCurrentDirectory] = useState("/");
     const inputRef = useRef(null);
     const terminalContentRef = useRef(null);
 
@@ -16,15 +19,11 @@ function Home() {
         'fortune', 'cowsay', 'tree', 'history'
     ];
 
-    const fileSystem = {
-        '~': ['Documents', 'Projects', 'Images', '.bashrc'],
-        '~/Documents': ['resume.pdf', 'notes.txt'],
-        '~/Projects': ['website', 'app', 'game'],
-        '~/Images': ['profile.jpg', 'banner.png'],
-    };
-
     const handleCommand = (command) => {
         const [cmd, ...args] = command.split(' ');
+        let output;
+        let newDirectory = currentDirectory;
+
         switch (cmd.toLowerCase()) {
             case 'help':
                 return "Available commands: " + validCommands.join(', ');
@@ -38,25 +37,13 @@ function Home() {
                 setCommandHistory([]);
                 return null;
             case 'ls':
-                return fileSystem[currentDirectory].join('  ');
+                return fileSystem.ls(args[0] || '');
             case 'cd':
-                if (args[0] === '..') {
-                    setCurrentDirectory(prev => prev === '~' ? '~' : '~');
-                    return '';
-                } else if (fileSystem[`${currentDirectory}/${args[0]}`]) {
-                    setCurrentDirectory(prev => `${prev}/${args[0]}`);
-                    return '';
-                } else {
-                    return `cd: ${args[0]}: No such directory`;
-                }
+                output = fileSystem.cd(args[0] || '');
+                setCurrentDirectory(fileSystem.pwd());
+                return output;            
             case 'cat':
-                if (args[0] === 'resume.pdf') {
-                    return "Error: Cannot display PDF content in terminal. Try opening it with a PDF viewer.";
-                } else if (args[0] === 'notes.txt') {
-                    return "TODO:\n1. Finish portfolio website\n2. Apply for dream job\n3. Learn a new programming language\n4. Contribute to open-source projects";
-                } else {
-                    return `cat: ${args[0]}: No such file`;
-                }
+                return fileSystem.readFile(args[0])
             case 'date':
                 return new Date().toString();
             case 'echo':
@@ -64,13 +51,13 @@ function Home() {
             case 'whoami':
                 return "ghiles-larbi";
             case 'pwd':
-                return currentDirectory;
+                return fileSystem.pwd();
             case 'mkdir':
-                return `mkdir: Created directory '${args[0]}'`;
+                return fileSystem.mkdir(args[0]);
             case 'rm':
-                return `rm: Removed '${args[0]}'`;
+                return fileSystem.rm(args[0]);
             case 'touch':
-                return `touch: Created file '${args[0]}'`;
+                return fileSystem.touch(args[0]);
             case 'grep':
                 return "grep: No matches found";
             case 'man':
@@ -102,19 +89,7 @@ function Home() {
                 ||     ||
                 `;
             case 'tree':
-                return `
-.
-├── Documents
-│   ├── resume.pdf
-│   └── notes.txt
-├── Projects
-│   ├── website
-│   ├── app
-│   └── game
-└── Images
-    ├── profile.jpg
-    └── banner.png
-                `;
+                return fileSystem.tree();
             case 'history':
                 return commandHistory.map((cmd, index) => `${index + 1}  ${cmd.input}`).join('\n');
             default:
@@ -126,7 +101,7 @@ function Home() {
         if (e.key === 'Enter') {
             const output = handleCommand(currentInput);
             if (output !== null) {
-                setCommandHistory(prev => [...prev, { input: currentInput, output, isValid: validCommands.includes(currentInput.split(' ')[0].toLowerCase()) }]);
+                setCommandHistory(prev => [...prev, { input: currentInput, output, isValid: validCommands.includes(currentInput.split(' ')[0].toLowerCase()), pwd: currentDirectory }]);
             }
             setCurrentInput("");
         }
@@ -183,14 +158,14 @@ function Home() {
                     {commandHistory.map((item, index) => (
                         <div key={index}>
                             <div className={styles.inputLine}>
-                                <span className={styles.prompt}>guest@portfolio:{currentDirectory}$</span>
+                                <span className={styles.prompt}>guest@Unknown:{item.pwd}$</span>
                                 <span className={item.isValid ? styles.validCommand : styles.invalidCommand}>{item.input}</span>
                             </div>
                             <div className={styles.commandOutput}>{item.output}</div>
                         </div>
                     ))}
                     <div className={styles.inputLine}>
-                        <span className={styles.prompt}>guest@portfolio:{currentDirectory}$</span>
+                        <span className={styles.prompt}>guest@Unknown:{currentDirectory}$</span>
                         <input
                             ref={inputRef}
                             type="text"

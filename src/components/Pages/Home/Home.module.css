@@ -113,6 +113,7 @@
     animation: slideUp 0.5s ease-out;
     display: flex;
     flex-direction: column;
+    font-family: monospace;
 }
 
 @keyframes slideUp {
@@ -197,7 +198,7 @@
 }
 
 .commandOutput {
-    margin-left: 20px;
+    margin-left: 0px;
     color: rgba(255, 255, 255, 0.9);
 }
 
