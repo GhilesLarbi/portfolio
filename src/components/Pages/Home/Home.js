@@ -131,7 +131,7 @@ function Home() {
 
     return (
         <section className={styles.section}>
-                            <p className={styles.title}>
+            <p className={styles.title}>
                 <span>Home</span>
             </p>
             <h1 className={styles.header}>

@@ -1,1 +1,30 @@
-<svg width="24" xmlns="http://www.w3.org/2000/svg" height="24" fill="none"><g data-testid="github"><g class="fills"><rect rx="0" ry="0" width="64" height="64" class="frame-background"/></g><g class="frame-children"><g data-testid="svg-path"><path d="M7.5 21A1.5 1.5 0 0 0 9 19.5a2.995 2.995 0 0 1 .881-2.126s-5.133-.574-6.225-2.779A8.127 8.127 0 0 1 3 11.033 6.46 6.46 0 0 1 4.463 6.75a5.747 5.747 0 0 1-.289-1.807c0-.818-.049-1.193.326-1.943 1.68 0 3 .319 4.264 1.32A14.774 14.774 0 0 1 12 4.013a14.774 14.774 0 0 1 3.236.307C16.5 3.319 17.82 3 19.5 3c.375.731.326 1.125.326 1.943a5.775 5.775 0 0 1-.288 1.807A6.464 6.464 0 0 1 21 11.033a8.127 8.127 0 0 1-.656 3.562c-1.091 2.205-6.225 2.779-6.225 2.779.565.563.882 1.328.881 2.126a1.5 1.5 0 0 0 1.5 1.5" style="fill: none;" class="fills"/><g class="strokes"><path d="M7.5 21A1.5 1.5 0 0 0 9 19.5a2.995 2.995 0 0 1 .881-2.126s-5.133-.574-6.225-2.779A8.127 8.127 0 0 1 3 11.033 6.46 6.46 0 0 1 4.463 6.75a5.747 5.747 0 0 1-.289-1.807c0-.818-.049-1.193.326-1.943 1.68 0 3 .319 4.264 1.32A14.774 14.774 0 0 1 12 4.013a14.774 14.774 0 0 1 3.236.307C16.5 3.319 17.82 3 19.5 3c.375.731.326 1.125.326 1.943a5.775 5.775 0 0 1-.288 1.807A6.464 6.464 0 0 1 21 11.033a8.127 8.127 0 0 1-.656 3.562c-1.091 2.205-6.225 2.779-6.225 2.779.565.563.882 1.328.881 2.126a1.5 1.5 0 0 0 1.5 1.5" style="fill: none; stroke-width: 1; stroke: rgb(255, 255, 255); stroke-opacity: 0.6;" class="stroke-shape"/></g></g><g data-testid="svg-path"><path d="M9 19.08c-1.5.75-2.366-.161-3.281-.75S4.125 17.531 3 18" style="fill: none;" class="fills"/><g class="strokes"><path d="M9 19.08c-1.5.75-2.366-.161-3.281-.75S4.125 17.531 3 18" style="fill: none; stroke-width: 1; stroke: rgb(255, 255, 255); stroke-opacity: 0.6;" class="stroke-shape"/></g></g><g data-testid="svg-ellipse"><ellipse cx="8.554" cy="11.895" rx="1.196" ry="1.808" style="fill: none;" class="fills"/><g class="strokes"><g class="inner-stroke-shape"><defs><clipPath id="d"><use href="#c"/></clipPath><ellipse cx="8.554" cy="11.895" rx="1.196" ry="1.808" id="c" style="fill: none; stroke-width: 2; stroke: rgb(255, 255, 255); stroke-opacity: 0.6;"/></defs><use href="#c" clip-path="url('#d')"/></g></g></g><g data-testid="svg-ellipse"><ellipse cx="15.446" cy="11.895" rx="1.196" ry="1.808" style="fill: none;" class="fills"/><g class="strokes"><g class="inner-stroke-shape"><defs><clipPath id="f"><use href="#e"/></clipPath><ellipse cx="15.446" cy="11.895" rx="1.196" ry="1.808" id="e" style="fill: none; stroke-width: 2; stroke: rgb(255, 255, 255); stroke-opacity: 0.6;"/></defs><use href="#e" clip-path="url('#f')"/></g></g></g></g></g></svg>
+<svg width="24" xmlns="http://www.w3.org/2000/svg" height="24" fill="none">
+    <rect rx="0" ry="0" width="64" height="64" />
+    <path
+        d="M7.5 21A1.5 1.5 0 0 0 9 19.5a2.995 2.995 0 0 1 .881-2.126s-5.133-.574-6.225-2.779A8.127 8.127 0 0 1 3 11.033 6.46 6.46 0 0 1 4.463 6.75a5.747 5.747 0 0 1-.289-1.807c0-.818-.049-1.193.326-1.943 1.68 0 3 .319 4.264 1.32A14.774 14.774 0 0 1 12 4.013a14.774 14.774 0 0 1 3.236.307C16.5 3.319 17.82 3 19.5 3c.375.731.326 1.125.326 1.943a5.775 5.775 0 0 1-.288 1.807A6.464 6.464 0 0 1 21 11.033a8.127 8.127 0 0 1-.656 3.562c-1.091 2.205-6.225 2.779-6.225 2.779.565.563.882 1.328.881 2.126a1.5 1.5 0 0 0 1.5 1.5"
+        style="fill: none;" />
+    <path
+        d="M7.5 21A1.5 1.5 0 0 0 9 19.5a2.995 2.995 0 0 1 .881-2.126s-5.133-.574-6.225-2.779A8.127 8.127 0 0 1 3 11.033 6.46 6.46 0 0 1 4.463 6.75a5.747 5.747 0 0 1-.289-1.807c0-.818-.049-1.193.326-1.943 1.68 0 3 .319 4.264 1.32A14.774 14.774 0 0 1 12 4.013a14.774 14.774 0 0 1 3.236.307C16.5 3.319 17.82 3 19.5 3c.375.731.326 1.125.326 1.943a5.775 5.775 0 0 1-.288 1.807A6.464 6.464 0 0 1 21 11.033a8.127 8.127 0 0 1-.656 3.562c-1.091 2.205-6.225 2.779-6.225 2.779.565.563.882 1.328.881 2.126a1.5 1.5 0 0 0 1.5 1.5"
+        style="fill: none; stroke-width: 1; stroke: currentColor;" />
+    <path d="M9 19.08c-1.5.75-2.366-.161-3.281-.75S4.125 17.531 3 18" style="fill: none;" />
+    <path d="M9 19.08c-1.5.75-2.366-.161-3.281-.75S4.125 17.531 3 18"
+        style="fill: none; stroke-width: 1; stroke: currentColor;" />
+    <ellipse cx="8.554" cy="11.895" rx="1.196" ry="1.808" style="fill: none;" />
+    <defs>
+        <clipPath id="d">
+            <use href="#c" />
+        </clipPath>
+        <ellipse cx="8.554" cy="11.895" rx="1.196" ry="1.808" id="c"
+            style="fill: none; stroke-width: 2; stroke: currentColor;" />
+    </defs>
+    <use href="#c" clip-path="url('#d')" />
+    <ellipse cx="15.446" cy="11.895" rx="1.196" ry="1.808" style="fill: none;" />
+    <defs>
+        <clipPath id="f">
+            <use href="#e" />
+        </clipPath>
+        <ellipse cx="15.446" cy="11.895" rx="1.196" ry="1.808" id="e"
+            style="fill: none; stroke-width: 2; stroke: currentColor;" />
+    </defs>
+    <use href="#e" clip-path="url('#f')" />
+</svg>

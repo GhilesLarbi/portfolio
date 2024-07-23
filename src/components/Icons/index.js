@@ -5,6 +5,7 @@ export { default as Contact } from "./Contact";
 export { default as DownArrow } from "./DownArrow";
 export { default as Experience } from "./Experience";
 export { default as Home } from "./Home";
+export { default as Link } from "./Link";
 export { default as Projects } from "./Projects";
 export { default as Sun } from "./Sun";
 export { default as Techs } from "./Techs";
