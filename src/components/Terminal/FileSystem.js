@@ -1,41 +1,147 @@
-import data from "./fileSystemData";
-
+// import data from "./fileSystemData";
 
 class FileSystem {
-    constructor() {
-        this.root = data
+    constructor(fileSystemData) {
+        this.root = fileSystemData;
         this.currentPath = ['/'];
+        this.currentUser = 'guest';
+        this.users = {
+            root: { id: 0, groups: ['root'] },
+            ghiles: { id: 1000, groups: ['ghiles', 'users'] },
+            guest: { id: 1001, groups: ['guests'] }
+        };
     }
 
-    resolvePath(path) {
-        let segments = [];
+    // System call to read directory contents
+    sys_readdir(path) {
+        const node = this.getNodeAtPath(this.resolvePath(path));
+        if (node && node.type === 'directory' && this.hasPermission(node, 4)) {
+            return Object.entries(node.children);
+        }
+        return null;
+    }
 
-        if (path === '/') return ['/'];
-        if (path.startsWith('/')) {
-            segments = path.split('/').filter(Boolean);
-        } else if (path === '~') {
-            segments = ['/home', 'ghiles'];
-        } else if (path.startsWith('~/')) {
-            segments = ['/home', 'ghiles', ...path.slice(2).split('/')];
+    // System call to change current directory
+    sys_chdir(path) {
+        const resolvedPath = this.resolvePath(path);
+        const node = this.getNodeAtPath(resolvedPath);
+        if (node && node.type === 'directory' && this.hasPermission(node, 1)) {
+            this.currentPath = resolvedPath;
+            return true;
+        }
+        return false;
+    }
+
+    // System call to get current working directory
+    sys_getcwd() {
+        return '/' + this.currentPath.slice(1).join('/');
+    }
+
+    // System call to create a new directory
+    sys_mkdir(path) {
+        const parentPath = this.resolvePath(path.split('/').slice(0, -1).join('/'));
+        const dirName = path.split('/').pop();
+        const parentNode = this.getNodeAtPath(parentPath);
+        if (parentNode && parentNode.type === 'directory' && this.hasPermission(parentNode, 2)) {
+            parentNode.children[dirName] = {
+                name: dirName,
+                type: 'directory',
+                permissions: { owner: this.currentUser, group: this.users[this.currentUser].groups[0], mode: 0o755 },
+                children: {}
+            };
+            return true;
+        }
+        return false;
+    }
+
+    // System call to remove a file or empty directory
+    sys_unlink(path) {
+        const parentPath = this.resolvePath(path.split('/').slice(0, -1).join('/'));
+        const name = path.split('/').pop();
+        const parentNode = this.getNodeAtPath(parentPath);
+        if (parentNode && parentNode.type === 'directory' && this.hasPermission(parentNode, 2)) {
+            if (parentNode.children[name]) {
+                delete parentNode.children[name];
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // System call to create or update a file
+    sys_write(path, content) {
+        const parentPath = this.resolvePath(path.split('/').slice(0, -1).join('/'));
+        const fileName = path.split('/').pop();
+        const parentNode = this.getNodeAtPath(parentPath);
+        if (parentNode && parentNode.type === 'directory' && this.hasPermission(parentNode, 2)) {
+            if (!parentNode.children[fileName]) {
+                parentNode.children[fileName] = {
+                    name: fileName,
+                    type: 'file',
+                    permissions: { owner: this.currentUser, group: this.users[this.currentUser].groups[0], mode: 0o644 },
+                    content: ''
+                };
+            }
+            if (this.hasPermission(parentNode.children[fileName], 2)) {
+                parentNode.children[fileName].content = content;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // System call to read file content
+    sys_read(path) {
+        const node = this.getNodeAtPath(this.resolvePath(path));
+        if (node && node.type === 'file' && this.hasPermission(node, 4)) {
+            return node.content;
+        }
+        return null;
+    }
+
+    // Helper method to resolve path
+    resolvePath(path) {
+        let segments;
+
+        if (Array.isArray(path)) {
+            segments = path;
+        } else if (typeof path === 'string') {
+            if (path === '/') return ['/'];
+            if (path.startsWith('/')) {
+                segments = ['/', ...path.split('/').filter(Boolean)];
+            } else if (path === '~') {
+                segments = ['/', 'home', this.currentUser];
+            } else if (path.startsWith('~/')) {
+                segments = ['/', 'home', this.currentUser, ...path.slice(2).split('/').filter(Boolean)];
+            } else {
+                segments = [...this.currentPath, ...path.split('/').filter(Boolean)];
+            }
         } else {
-            segments = [...this.currentPath, ...path.split('/')];
+            throw new Error('Invalid path type');
         }
 
         const resolvedPath = [];
         for (const segment of segments) {
-            if (segment === '' || segment === '.') continue;
+            if (segment === '.' || segment === '') continue;
             if (segment === '..') {
-                if (resolvedPath.length > 0) resolvedPath.pop();
+                if (resolvedPath.length > 1) resolvedPath.pop();
             } else {
                 resolvedPath.push(segment);
             }
         }
-        return resolvedPath.length > 0 ? resolvedPath : ['/'];
+
+        // Ensure the path always starts with a single '/'
+        if (resolvedPath[0] !== '/') {
+            resolvedPath.unshift('/');
+        }
+
+        return resolvedPath;
     }
 
+    // Helper method to get node at path
     getNodeAtPath(path) {
         let node = this.root;
-        for (const segment of path) {
+        for (let segment of path) {
             if (segment === '/') continue;
             if (!node.children || !node.children[segment]) return null;
             node = node.children[segment];
@@ -43,101 +149,38 @@ class FileSystem {
         return node;
     }
 
-    cd(path) {
-        const resolvedPath = this.resolvePath(path);
-        const node = this.getNodeAtPath(resolvedPath);
-        if (node && node.type === 'directory') {
-            this.currentPath = resolvedPath;
-            return '';
+    // Helper method to check permissions
+    hasPermission(node, permission) {
+        if (this.currentUser === 'root') return true;
+        const { owner, group, mode } = node.permissions;
+        if (this.currentUser === owner) {
+            return !!(mode & (permission << 6));
+        } else if (this.users[this.currentUser].groups.includes(group)) {
+            return !!(mode & (permission << 3));
+        } else {
+            return !!(mode & permission);
         }
-        return `cd: ${path}: No such directory`;
     }
 
-    ls(path = '') {
-        const resolvedPath = this.resolvePath(path);
-        const node = this.getNodeAtPath(resolvedPath);
-        if (node && node.type === 'directory') {
-            return Object.keys(node.children).join('  ');
+    // Method to execute commands
+    executeCommand(commandName, args) {
+        const command = this.getNodeAtPath(['bin', commandName]);
+        if (command && command.type === 'file' && typeof command.content === 'function') {
+            return command.content(this, args);
         }
-        return `ls: ${path}: No such directory`;
-    }
-
-    pwd() {
-        return this.currentPath.join('/').replace('//', '/');
-    }
-
-    mkdir(name) {
-        const parent = this.getNodeAtPath(this.currentPath);
-        if (parent && parent.type === 'directory') {
-            if (parent.children[name]) {
-                return `mkdir: ${name}: File exists`;
-            }
-            parent.children[name] = { name, type: 'directory', children: {} };
-            return ``;
-        }
-        return `mkdir: cannot create directory '${name}'`;
-    }
-
-    touch(name) {
-        const parent = this.getNodeAtPath(this.currentPath);
-        if (parent && parent.type === 'directory') {
-            if (parent.children[name]) {
-                return `touch: ${name}: File exists`;
-            }
-            parent.children[name] = { name, type: 'file' };
-            return ``;
-        }
-        return `touch: cannot create file '${name}'`;
-    }
-
-    rm(name) {
-        const parent = this.getNodeAtPath(this.currentPath);
-        if (parent && parent.type === 'directory') {
-            if (!parent.children[name]) {
-                return `rm: ${name}: No such file or directory`;
-            }
-            delete parent.children[name];
-            return ``;
-        }
-        return `rm: cannot remove '${name}'`;
-    }
-
-    tree(path = '', prefix = '') {
-        const resolvedPath = this.resolvePath(path);
-        const node = this.getNodeAtPath(resolvedPath);
-        console.log("path : ", path)
-        console.log("resolve path : ", resolvedPath)
-        if (!node || node.type !== 'directory') {
-            return `tree: ${path}: No such directory`;
-        }
-        
-        let output = prefix + node.name + '\n';
-        const entries = Object.entries(node.children);
-        for (let i = 0; i < entries.length; i++) {
-            const [name, child] = entries[i];
-            const isLast = i === entries.length - 1;
-            const newPrefix = prefix + (isLast ? '└── ' : '├── ');
-            if (child.type === 'directory') {
-                output += this.tree(["/", ...resolvedPath, name].join('/'), newPrefix);
-            } else {
-                output += newPrefix + name + '\n';
-            }
-        }
-        return output;
-    }
-
-    readFile(path) {
-        console.log(path)
-        if (!path) {
-            return `No file specified`;
-        }
-        const resolvedPath = this.resolvePath(path);
-        const node = this.getNodeAtPath(resolvedPath);
-        if (node && node.type === 'file' && node.content) {
-            return node.content || '';
-        }
-        return `readFile: ${path}: Not a text file or file does not exist`;
+        return `${commandName}: command not found`;
     }
 }
+
+// Static method to get mode string
+FileSystem.getModeString = function(mode) {
+    const modeChars = ['---', '--x', '-w-', '-wx', 'r--', 'r-x', 'rw-', 'rwx'];
+    const type = mode & 0o170000;
+    const typeChar = type === 0o040000 ? 'd' : '-';
+    const ownerMode = modeChars[(mode >> 6) & 7];
+    const groupMode = modeChars[(mode >> 3) & 7];
+    const otherMode = modeChars[mode & 7];
+    return `${typeChar}${ownerMode}${groupMode}${otherMode}`;
+};
 
 export default FileSystem;
