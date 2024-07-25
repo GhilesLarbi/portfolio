@@ -2,21 +2,20 @@ import React, { useState, useEffect, useRef } from "react";
 import styles from './Home.module.css'
 import { Arrow as ArrowIcon } from "../../Icons";
 import Shell from '../../Terminal/Shell';
-import fileSystemData from '../../Terminal/fileSystemData';
+import fileSystem from '../../Terminal/fileSystem';
 
 function Home() {
     const [currentInput, setCurrentInput] = useState("");
-    const [shell] = useState(() => new Shell(fileSystemData));
+    const [shell] = useState(() => new Shell(fileSystem));
     const [commandHistory, setCommandHistory] = useState(shell.getCommandHistory());
+    const [commandHistoryLength, setCommandHistoryLength] = useState(0)
     const inputRef = useRef(null);
     const terminalContentRef = useRef(null);
 
     const handleCommand = (command) => {
-        const output = shell.handleCommand(command);
-        if (output !== null) {
-            shell.addCommandToHistory(currentInput, output);
-        }
+        shell.handleCommand(command);
         setCommandHistory(shell.getCommandHistory());
+        setCommandHistoryLength(commandHistory.length)
         setCurrentInput("");
     };
 
@@ -39,13 +38,10 @@ function Home() {
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             handleCommand(currentInput);
-            setCurrentInput("")
         }
         if (e.ctrlKey && e.key === 'l') {
             e.preventDefault();
-            shell.handleCommand('clear');
-            setCommandHistory([]);
-            setCurrentInput("")
+            handleCommand('clear');
         }
     };
 
@@ -78,21 +74,21 @@ function Home() {
                     {commandHistory.map((item, index) => (
                         <div key={index}>
                             <div className={styles.inputLine}>
-                                <span className={styles.prompt}>{shell.fileSystem.currentUser}@Unknown:{item.pwd}$</span>
+                                <span className={styles.prompt}>{shell.kernel.currentUser}@Unknown:{item.pwd}$</span>
                                 <span className={item.isValid ? styles.validCommand : styles.invalidCommand}>{item.input}</span>
                             </div>
                             <div className={styles.commandOutput}>{item.output}</div>
                         </div>
                     ))}
                     <div className={styles.inputLine}>
-                        <span className={styles.prompt}>{shell.fileSystem.currentUser}@Unknown:{shell.currentDirectory}$</span>
+                        <span className={styles.prompt}>{shell.kernel.currentUser}@Unknown:{shell.pwd()}$</span>
                         <input
                             ref={inputRef}
                             type="text"
                             value={currentInput}
                             onChange={(e) => setCurrentInput(e.target.value)}
                             onKeyDown={handleKeyDown}
-                            className={`${styles.terminalInput} ${shell.commands.includes(currentInput.split(' ')[0].toLowerCase()) ? styles.validCommand : ''}`}
+                            className={`${styles.terminalInput} ${shell.commands.includes(shell.splitCommand(currentInput)[0]) ? styles.validCommand : ''}`}
                         />
                     </div>
                 </div>

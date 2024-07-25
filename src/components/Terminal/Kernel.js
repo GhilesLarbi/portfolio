@@ -1,10 +1,8 @@
-// import data from "./fileSystemData";
-
-class FileSystem {
-    constructor(fileSystemData) {
-        this.root = fileSystemData;
+class Kernel {
+    constructor(fileSystem) {
+        this.root = fileSystem;
         this.currentPath = ['/'];
-        this.currentUser = 'guest';
+        this.currentUser = 'ghiles';
         this.users = {
             root: { id: 0, groups: ['root'] },
             ghiles: { id: 1000, groups: ['ghiles', 'users'] },
@@ -19,22 +17,6 @@ class FileSystem {
             return Object.entries(node.children);
         }
         return null;
-    }
-
-    // System call to change current directory
-    sys_chdir(path) {
-        const resolvedPath = this.resolvePath(path);
-        const node = this.getNodeAtPath(resolvedPath);
-        if (node && node.type === 'directory' && this.hasPermission(node, 1)) {
-            this.currentPath = resolvedPath;
-            return true;
-        }
-        return false;
-    }
-
-    // System call to get current working directory
-    sys_getcwd() {
-        return '/' + this.currentPath.slice(1).join('/');
     }
 
     // System call to create a new directory
@@ -162,18 +144,15 @@ class FileSystem {
         }
     }
 
-    // Method to execute commands
-    executeCommand(commandName, args) {
-        const command = this.getNodeAtPath(['bin', commandName]);
-        if (command && command.type === 'file' && typeof command.content === 'function') {
-            return command.content(this, args);
-        }
-        return `${commandName}: command not found`;
+    // Method to execute executable files
+    // add a way to manage process
+    process(executable, args, env) {
+        return executable(this, args, env);
     }
 }
 
 // Static method to get mode string
-FileSystem.getModeString = function(mode) {
+Kernel.getModeString = function(mode) {
     const modeChars = ['---', '--x', '-w-', '-wx', 'r--', 'r-x', 'rw-', 'rwx'];
     const type = mode & 0o170000;
     const typeChar = type === 0o040000 ? 'd' : '-';
@@ -183,4 +162,4 @@ FileSystem.getModeString = function(mode) {
     return `${typeChar}${ownerMode}${groupMode}${otherMode}`;
 };
 
-export default FileSystem;
+export default Kernel;

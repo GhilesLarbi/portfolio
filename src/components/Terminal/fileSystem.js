@@ -1,6 +1,6 @@
-import FileSystem from "./FileSystem";
+import Kernel from "./Kernel";
 
-let data = {
+let fileSystem = {
     name: '/',
     type: 'directory',
     permissions: { owner: 'root', group: 'root', mode: 0o755 },
@@ -14,59 +14,42 @@ let data = {
                     name: 'ls',
                     type: 'file',
                     permissions: { owner: 'root', group: 'root', mode: 0o755 },
-                    content: function(fs, args) {
-                        const path = args[0] || fs.sys_getcwd();
-                        const entries = fs.sys_readdir(path);
+                    content: function(kernel, args, env) {
+                        const path = args[0] || env.PWD; // FIXME ; fix this please
+                        const entries = kernel.sys_readdir(path);
                         if (entries === null) return `ls: cannot access '${path}': No such file or directory`;
                         return entries.map(([name, node]) => {
                             const { owner, group, mode } = node.permissions;
-                            const modeString = FileSystem.getModeString(mode);
+                            const modeString = Kernel.getModeString(mode);
                             return `${modeString} ${owner} ${group} ${name}`;
                         }).join('\n');
-                    }
-                },
-                'cd': {
-                    name: 'cd',
-                    type: 'file',
-                    permissions: { owner: 'root', group: 'root', mode: 0o755 },
-                    content: function(fs, args) {
-                        const path = args[0] || '/';
-                        return fs.sys_chdir(path) ? '' : `cd: ${path}: No such file or directory`;
-                    }
-                },
-                'pwd': {
-                    name: 'pwd',
-                    type: 'file',
-                    permissions: { owner: 'root', group: 'root', mode: 0o755 },
-                    content: function(fs, args) {
-                        return fs.sys_getcwd();
                     }
                 },
                 'mkdir': {
                     name: 'mkdir',
                     type: 'file',
                     permissions: { owner: 'root', group: 'root', mode: 0o755 },
-                    content: function(fs, args) {
+                    content: function(kernel, args, env) {
                         if (!args[0]) return 'mkdir: missing operand';
-                        return fs.sys_mkdir(args[0]) ? '' : `mkdir: cannot create directory '${args[0]}': File exists or permission denied`;
+                        return kernel.sys_mkdir(args[0]) ? '' : `mkdir: cannot create directory '${args[0]}': File exists or permission denied`;
                     }
                 },
                 'rm': {
                     name: 'rm',
                     type: 'file',
                     permissions: { owner: 'root', group: 'root', mode: 0o755 },
-                    content: function(fs, args) {
+                    content: function(kernel, args, env) {
                         if (!args[0]) return 'rm: missing operand';
-                        return fs.sys_unlink(args[0]) ? '' : `rm: cannot remove '${args[0]}': No such file or directory or permission denied`;
+                        return kernel.sys_unlink(args[0]) ? '' : `rm: cannot remove '${args[0]}': No such file or directory or permission denied`;
                     }
                 },
                 'cat': {
                     name: 'cat',
                     type: 'file',
                     permissions: { owner: 'root', group: 'root', mode: 0o755 },
-                    content: function(fs, args) {
+                    content: function(kernel, args, env) {
                         if (!args[0]) return 'cat: missing operand';
-                        const content = fs.sys_read(args[0]);
+                        const content = kernel.sys_read(args[0]);
                         return content !== null ? content : `cat: ${args[0]}: No such file or permission denied`;
                     }
                 },
@@ -74,29 +57,29 @@ let data = {
                     name: 'date',
                     type: 'file',
                     permissions: { owner: 'root', group: 'root', mode: 0o755 },
-                    content: function(fs, args) {
+                    content: function(kernel, args, env) {
                         return new Date().toString();
                     }
                 },
-                'echo': {
-                    name: 'echo',
+                'whoami': {
+                    name: 'whoami',
                     type: 'file',
                     permissions: { owner: 'root', group: 'root', mode: 0o755 },
-                    content: function(fs, args) {
-                        return args.join(' ');
+                    content: function(kernel, args, env) {
+                        return kernel.currentUser
                     }
                 },
                 'tree': {
                     name: 'tree',
                     type: 'file',
                     permissions: { owner: 'root', group: 'root', mode: 0o755 },
-                    content: function(fs, args) {
-                        const path = args[0] || '/';
-                        const resolvedPath = fs.resolvePath(path);
+                    content: function(kernel, args, env) {
+                        const path = args[0] || env.PWD;
+                        const resolvedPath = kernel.resolvePath(path);
                 
                         function traverseDirectory(currentPath, prefix = '') {
                             let output = '';
-                            const node = fs.getNodeAtPath(currentPath);
+                            const node = kernel.getNodeAtPath(currentPath);
                             
                             if (!node || node.type !== 'directory') {
                                 return output;
@@ -126,7 +109,7 @@ let data = {
                     name: 'cowsay',
                     type: 'file',
                     permissions: { owner: 'root', group: 'root', mode: 0o755 },
-                    content: function(fs, args) {
+                    content: function(kernel, args, env) {
                         const message = args.join(' ')
                         return  " "+
                                 "_".repeat(message.length+2)+"\n"+
@@ -134,9 +117,9 @@ let data = {
                                 "¯".repeat(message.length+2)+"\n"+
                                 "   \\   ^__^\n"+
                                 "   \\  (oo)\\_______\n"+
-                                "       (__)\\       )\\/\\\n"+
-                                "           ||----w |\n"+
-                                "           ||     ||\n"
+                                "      (__)\\       )\\/\\\n"+
+                                "          ||----w |\n"+
+                                "          ||     ||\n"
                     }
                 },
 
@@ -346,4 +329,4 @@ let data = {
     }
 };
 
-export default data
+export default fileSystem
