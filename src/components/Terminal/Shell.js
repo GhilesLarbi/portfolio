@@ -4,9 +4,12 @@ class Shell {
     constructor(fileSystem) {
         this.kernel = new Kernel(fileSystem);
         this.commandHistory = [];
-        this.currentPath = ['/'];
+        
+        // set current path to the user home directory
+        this.currentPath = ["/", ...this.kernel.userManager.getHomeDir()]
+
         this.env = {
-            PWD: "/",
+            PWD:  this.getWorkingDirectory(true),
             PATH: '/bin:/usr/bin:/usr/local/bin',
         };
         this.initializeCommands();
@@ -72,7 +75,11 @@ class Shell {
         this.commandHistory.push({ input, output, isValid, pwd,  user});
     }
 
-    getWorkingDirectory() {
+    getWorkingDirectory(env) {
+        if (env !== undefined){
+            return '/' + this.currentPath.slice(1).join('/');
+        }
+
         this.env.PWD = '/' + this.currentPath.slice(1).join('/');
         return this.env.PWD;
     }

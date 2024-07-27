@@ -5,7 +5,12 @@ class FileSystem {
 
     readFile(path, userManager) {
         const node = this.getNodeAtPath(path);
-        return (node && node.type === 'file' && this.hasPermission(node, 4, userManager)) ? node.content : null;
+        if (node && node.type === 'file') {
+            if (this.hasPermission(node, 4, userManager))
+                return String(node.content);
+            else return null
+        }
+        return null
     }
 
     readDirectory(path, userManager) {

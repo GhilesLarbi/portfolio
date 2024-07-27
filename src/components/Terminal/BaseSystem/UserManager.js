@@ -87,8 +87,14 @@ class UserManager {
     }
 
     getHomeDir(user) {
+        if (user === undefined) user = this.currentUser
         const userInfo = this.users[user];
-        return userInfo ? userInfo.home.split('/').filter(Boolean) : ['home', user];
+
+        if (userInfo) {
+            // return ["/", ...userInfo.home.split('/').filter(Boolean)]
+            return [...userInfo.home.split('/').filter(Boolean)]
+        } 
+        return ['/', 'home', user];
     }
 }
 
