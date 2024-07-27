@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styles from './Home.module.css'
 import { Arrow as ArrowIcon } from "../../Icons";
 import Shell from '../../Terminal/Shell';
-import fileSystem from '../../Terminal/fileSystem';
+import fileSystem from '../../Terminal/FileSystem/fileSystem';
 
 function Home() {
     const [currentInput, setCurrentInput] = useState("");
@@ -74,21 +74,21 @@ function Home() {
                     {commandHistory.map((item, index) => (
                         <div key={index}>
                             <div className={styles.inputLine}>
-                                <span className={styles.prompt}>{shell.kernel.currentUser}@Unknown:{item.pwd}$</span>
+                                <span className={styles.prompt}>{item.user}@Unknown:{item.pwd}$</span>
                                 <span className={item.isValid ? styles.validCommand : styles.invalidCommand}>{item.input}</span>
                             </div>
                             <div className={styles.commandOutput}>{item.output}</div>
                         </div>
                     ))}
                     <div className={styles.inputLine}>
-                        <span className={styles.prompt}>{shell.kernel.currentUser}@Unknown:{shell.pwd()}$</span>
+                        <span className={styles.prompt}>{shell.kernel.userManager.getCurrentUser()}@Unknown:{shell.getWorkingDirectory()}$</span>
                         <input
                             ref={inputRef}
                             type="text"
                             value={currentInput}
                             onChange={(e) => setCurrentInput(e.target.value)}
                             onKeyDown={handleKeyDown}
-                            className={`${styles.terminalInput} ${shell.commands.includes(shell.splitCommand(currentInput)[0]) ? styles.validCommand : ''}`}
+                            className={`${styles.terminalInput} ${shell.commands.has(shell.splitCommand(currentInput)[0]) ? styles.validCommand : ''}`}
                         />
                     </div>
                 </div>

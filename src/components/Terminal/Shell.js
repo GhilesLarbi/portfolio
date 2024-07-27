@@ -1,190 +1,134 @@
-import Kernel from './Kernel';
+import Kernel from './BaseSystem/Kernel';
 
 class Shell {
     constructor(fileSystem) {
         this.kernel = new Kernel(fileSystem);
         this.commandHistory = [];
-        this.currentPath = ['/']
+        this.currentPath = ['/'];
         this.env = {
-            'PWD' : "/",
-            'PATH' : '/bin'
+            PWD: "/",
+            PATH: '/bin:/usr/bin:/usr/local/bin',
+        };
+        this.initializeCommands();
+    }
+
+    initializeCommands() {
+        this.builtinCommands = {
+            help: this.help.bind(this),
+            pwd: this.getWorkingDirectory.bind(this),
+            cd: this.changeDirectory.bind(this),
+            echo: this.echo.bind(this),
+            clear: this.clear.bind(this),
+            exit: this.exit.bind(this),
+        };
+        this.updateCommands();
+    }
+
+    updateCommands() {
+        const pathDirs = this.env.PATH.split(':');
+        this.commands = new Set(Object.keys(this.builtinCommands));
+        
+        for (const dir of pathDirs) {
+            const dirNode = this.kernel.fileSystem.getNodeAtPath(this.kernel.resolvePath(dir, '/'));
+            if (dirNode && dirNode.type === 'directory') {
+                Object.keys(dirNode.children).forEach(cmd => this.commands.add(cmd));
+            }
         }
-
-        const binPath = this.kernel.getNodeAtPath(['bin'])
-        this.commands = Object.keys(binPath.children)
-
-        const shell_commands = ['help', 'pwd', 'clear', 'echo', 'cd']
-        this.commands.push(...shell_commands);
-
     }
 
     handleCommand(command) {
-        const old_pwd = this.getWrokingDirectory()
+        const oldPwd = this.getWorkingDirectory();
+        const oldUser = this.kernel.userManager.currentUser
+
 
         const [cmd, ...args] = this.splitCommand(command);
-        let output;
-
-        switch (cmd) {
-            case undefined:
-                output = ""
-                break
-            case 'help':
-                output = this.help(cmd, args)
-                break
-            case 'pwd':
-                output = this.getWrokingDirectory(cmd, args)
-                break
-            case 'cd':
-                output = this.changeDirectory(cmd, args)
-                break
-            case 'echo':
-                output = this.echo(cmd, args)
-                break
-            case 'clear':
-                output = this.clear(cmd, args)
-                break
-            default:
-                output = this.execute(cmd, args)
+        let output = this.executeCommand(cmd, args);
+        
+        if (output !== null) {
+            this.addCommandToHistory(command, output, oldPwd, oldUser);
         }
+        return output;
+    }
 
-        if (output !== null) this.addCommandToHistory(command, output, old_pwd)
-        return output
+    executeCommand(cmd, args) {
+        if (cmd in this.builtinCommands) {
+            return this.builtinCommands[cmd](args);
+        } else if (cmd) {
+            return this.execute(cmd, args);
+        }
+        return "";
+    }
+
+    splitCommand(command) {
+        return command.match(/(?:[^\s"]+|"[^"]*")+/g) || [];
     }
 
     getCommandHistory() {
         return this.commandHistory;
     }
 
-    addCommandToHistory(input, output, pwd) {
-        const isValid = this.commands.includes(input.split(' ')[0].toLowerCase());
-        this.commandHistory.push({ input, output, isValid, pwd: pwd });
+    addCommandToHistory(input, output, pwd, user) {
+        const isValid = this.commands.has(input.split(' ')[0].toLowerCase());
+        this.commandHistory.push({ input, output, isValid, pwd,  user});
     }
 
-
-    splitCommand(command){
-        let command_nodes = []
-        let node = ""
-        for (let i = 0; i < command.length; i++){
-            if (command[i] !== ' ') {
-                node = node + command[i]
-            } 
-            else if (node.trim() === '') continue
-            else {
-                command_nodes.push(node)
-                node = ""
-            }
-        }
-        if (node.trim() !== '') command_nodes.push(node)
-
-        return command_nodes
-    }
-
-
-
-    // builtin commands 
-    getWrokingDirectory(cmd, args) {
+    getWorkingDirectory() {
         this.env.PWD = '/' + this.currentPath.slice(1).join('/');
-        return this.env.PWD
+        return this.env.PWD;
     }
 
-
-    changeDirectory(cmd, args) {
-        let path = args[0] || '~'
-
-        const resolvedPath = this.resolvePath(path)
-        const node = this.kernel.getNodeAtPath(resolvedPath)
-
-        if (!this.kernel.hasPermission(node, 1))
-            return `cd: ${path}: Permission denied`
-
-        if (node && node.type === 'directory') {
-            this.currentPath = resolvedPath
-            return this.getWrokingDirectory()
+    changeDirectory(args) {
+        const path = args[0] || '~';
+        const resolvedPath = this.kernel.resolvePath(path, this.env.PWD);
+        const node = this.kernel.fileSystem.getNodeAtPath(resolvedPath);
+        
+        if (!node || node.type !== 'directory') {
+            return `cd: ${path}: No such file or directory`;
         }
-        return `cd: ${path}: No such file or directory`
+        if (!this.kernel.fileSystem.hasPermission(node, 1, this.kernel.userManager)) {
+            return `cd: ${path}: Permission denied`;
+        }
+        
+        this.currentPath = resolvedPath;
+        this.env.PWD = '/' + resolvedPath.slice(1).join('/');
+        return "";
     }
 
-    pwd(cmd, args) {
-        return this.env.PWD
-    }
-
-    clear(cmd, args) {
-        this.commandHistory = [];
-        return null
-    }
-
-    help(cmd, args) {
-        return "Available commands: " + this.commands.join(', ');
-    }
-
-    echo(cmd, args) {
-        return args.join(" ")
-    }
-
-
-
-
-    // herper methods 
-    resolvePath(path) {
-        let segments;
-
-        if (Array.isArray(path)) {
-
-            segments = path;
-
-        } else if (typeof path === 'string') {
-
-            if (path === '/') return ['/'];
-
-            if (path.startsWith('/')) {
-
-                segments = ['/', ...path.split('/').filter(Boolean)];
-
-            } else if (path === '~') {
-
-                let currentUserHome = this.kernel.currentUser !== 'root' ? ['/', 'home'] : ['/']
-                segments = [...currentUserHome, this.kernel.currentUser];
-
-            } else if (path.startsWith('~/')) {
-
-                let currentUserHome = this.kernel.currentUser !== 'root' ? ['/', 'home'] : ['/']
-                segments = [...currentUserHome, this.kernel.currentUser, ...path.slice(2).split('/').filter(Boolean)];
-
-            } else {
-
-                segments = [...this.currentPath, ...path.split('/').filter(Boolean)];
-
-            }
+    exit() {
+        if (this.kernel.userManager.exitCurrentUser()) {
+            return `exit`;
         } else {
-
-            throw new Error('Invalid path type');
+            return "";
         }
-
-        const resolvedPath = [];
-        for (const segment of segments) {
-            if (segment === '.' || segment === '') continue;
-            if (segment === '..') {
-                if (resolvedPath.length > 1) resolvedPath.pop();
-            } else {
-                resolvedPath.push(segment);
-            }
-        }
-
-        // Ensure the path always starts with a single '/'
-        if (resolvedPath[0] !== '/') {
-            resolvedPath.unshift('/');
-        }
-
-        return resolvedPath;
+    }
+    
+    clear() {
+        this.commandHistory = [];
+        return null;
     }
 
+    help() {
+        return "Available commands: " + Array.from(this.commands).join(', ');
+    }
+
+    echo(args) {
+        return args.map(arg => {
+            if (arg.startsWith('$')) {
+                const envVar = arg.slice(1);
+                return this.env[envVar] || '';
+            }
+            return arg;
+        }).join(' ');
+    }
 
     execute(commandName, args) {
-        // check the PATH env variable for commands
-        const command = this.kernel.getNodeAtPath(['bin', commandName]);
-        if (command && command.type === 'file' && typeof command.content === 'function') {
-            let output = this.kernel.process(command.content, args, this.env)
-            return output
+        const pathDirs = this.env.PATH.split(':');
+        for (const dir of pathDirs) {
+            const commandPath = this.kernel.resolvePath(`${dir}/${commandName}`, '/');
+            const command = this.kernel.fileSystem.getNodeAtPath(commandPath);
+            if (command && command.type === 'file' && typeof command.content === 'function') {
+                return this.kernel.process(commandPath, args, this.env);
+            }
         }
         return `${commandName}: command not found`;
     }
