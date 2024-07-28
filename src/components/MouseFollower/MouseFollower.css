@@ -1,0 +1,14 @@
+.mouse-follower {
+  position: fixed;
+  width: var(--size);
+  height: var(--size);
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  /* border: 2px solid rgba(255, 255, 255, 0.3); */
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease;
+}

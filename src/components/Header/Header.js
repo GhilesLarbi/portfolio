@@ -8,7 +8,7 @@ function Header() {
     return (
         <header className={styles.header}>
             <button className={styles.lang_btn}>
-                <span>EN</span>
+                <span>FR</span>
                 <DownArrowIcon />
             </button>
             <button className={styles.theme_btn}>

@@ -4,9 +4,10 @@ import Sidebar from './components/Sidebar/Sidebar'
 import Page from './components/Pages/Page'
 
 import {useState} from 'react'
+import MouseFollower from './components/MouseFollower/MouseFollower'
 
 function App() {
-  const [currentPage, setCurrentPage] = useState("Home")
+  const [currentPage, setCurrentPage] = useState(1)
 
   const handlePageChange = (page) => {
     setCurrentPage(page)
@@ -17,6 +18,7 @@ function App() {
       <Header />
       <Sidebar currentPage={currentPage} onPageChange={handlePageChange} />
       <Page currentPage={currentPage} />
+      <MouseFollower />
     </div>
   );
 }

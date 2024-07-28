@@ -1,0 +1,88 @@
+.skillsSection {
+    /* padding: 4rem 2rem; */
+    /* background-color: #141a22; */
+    /* color: #fff; */
+}
+
+.mainTitle {
+    padding: 1rem 1.4rem;
+    border-radius: 10rem;
+    width: fit-content;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    position: relative;
+    letter-spacing: 3px;
+    font-size: 1.6rem;
+    color: #58b5d3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.mainTitle::before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    background-color: rgba(88, 180, 211, 0.1);
+    border-radius: inherit;
+    position: absolute;
+    right: 0;
+    top: 0;
+    filter: blur(.7rem);
+}
+
+.skillCategory {
+    margin-bottom: 4rem;
+    margin-left: .6rem;
+}
+
+.skillCategory h2 {
+    font-size: 2.4rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid rgba(88, 180, 211, 0.3);
+    padding-bottom: 0.5rem;
+}
+
+.skillGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 2rem;
+}
+
+.skillCard {
+    background-color: #141a22;
+
+    border-radius: 0 2rem 0 0;
+    padding: 2rem;
+    text-align: center;
+    /* transition: transform 0.3s ease; */
+}
+
+.skillCard:hover {
+    /* transform: translateY(-5px); */
+}
+
+.skillIcon {
+    margin-bottom: 5rem;
+}
+
+.skillCard h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+}
+
+.skillBar {
+    background-color: #2c3e50;
+    height: 10px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.skillLevel {
+    background-color: #58b5d3;
+    height: 100%;
+    /* width: 0; */
+    border-radius: inherit;
+    transition: width 200ms ease-out;
+}

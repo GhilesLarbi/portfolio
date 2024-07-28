@@ -19,21 +19,21 @@ import { Experience as ExperienceIcon } from "../Icons/";
 
 
 function Sidebar({ currentPage, onPageChange }) {
-    const menuItems = ["Home", "Projects", "Techs", "Experience", "About", "Contact"];
+    const menuItems = ["Accueil", "Projets", "Compétences", "Expérience", "À propos", "Contact"]
 
-    const getIcon = (menauItem) => {
-        switch (menauItem) {
-            case "Home":
+    const getIcon = (menauItemNumber) => {
+        switch (menauItemNumber) {
+            case 1:
                 return <HomeIcon className={styles.navBtn_icon} />
-            case "Projects":
+            case 2:
                 return <ProjectsIcon className={styles.navBtn_icon} />
-            case "Techs":
+            case 3:
                 return <TechsIcon className={styles.navBtn_icon} />
-            case "Experience":
+            case 4:
                 return <ExperienceIcon className={styles.navBtn_icon} />
-            case "About":
+            case 5:
                 return <AboutIcon className={styles.navBtn_icon} />
-            case "Contact":
+            case 6:
                 return <ContactIcon className={styles.navBtn_icon} />
         }
     }
@@ -45,10 +45,10 @@ function Sidebar({ currentPage, onPageChange }) {
             </div>
             <nav className={styles.nav}>
                 <ul>
-                    {menuItems.map((item) => (
-                        <li key={item}>
-                            <button onClick={() => onPageChange(item)} className={`${styles.navBtn} ${currentPage === item ? styles.active : ''}`}>
-                                {getIcon(item)}
+                    {menuItems.map((item, index) => (
+                        <li key={index}>
+                            <button onClick={() => onPageChange(index + 1)} className={`${styles.navBtn} ${currentPage === index + 1 ? styles.active : ''}`}>
+                                {getIcon(index + 1)}
                                 <p>{item}</p>
                                 <ArrowIcon className={styles.navBtn_arrow} />
                             </button>

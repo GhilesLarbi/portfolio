@@ -14,17 +14,17 @@ function Page({currentPage}){
 
     const renderPage = () => {
         switch (currentPage) {
-          case "Home":
+          case 1:
             return <Home />;
-          case "Projects":
+          case 2:
             return <Projects />;
-          case "Techs":
+          case 3:
             return <Techs />
-          case "Experience":
+          case 4:
             return <Experience />;
-          case "Contact":
+          case 5:
             return <Contact />;
-          case "About":
+          case 6:
             return <About />;
           default:
             return <Home />;
