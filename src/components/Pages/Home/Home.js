@@ -1,14 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, forwardRef } from "react";
 import styles from './Home.module.css'
 import { Arrow as ArrowIcon } from "../../Icons";
 import Shell from '../../Terminal/Shell';
 import fileSystem from '../../Terminal/FileSystem/fileSystem';
 import Terminal from "../../Terminal/Terminal";
 
-function Home() {
+
+const Home = forwardRef((props, ref) =>{
 
     return (
-        <section className={styles.section}>
+        <section className={styles.section} ref={ref}>
             <p className={styles.title}>
                 <span>Accueil</span>
             </p>
@@ -27,6 +28,6 @@ function Home() {
             <Terminal className={styles.terminal} />
         </section>
     );
-}
+})
 
 export default Home;

@@ -4,6 +4,8 @@
     color: rgba(255, 255, 255, 0.5);
     font-size: 2rem;
     position: relative;
+    height: 100vh;
+    overflow: hidden;
 }
 
 .bgpage {
@@ -19,4 +21,7 @@
 .page > * {
     padding: 8rem;
     padding-top: 10rem;
+    min-height: 100vh;
+    /* overflow-y: hidden; */
+    /* transition: transform .1s linear; */
 }

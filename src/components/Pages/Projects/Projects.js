@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef } from "react";
 import styles from './Projects.module.css'
 
 import { Link as LinkIcon } from '../../Icons'
@@ -60,19 +60,6 @@ const categories = [
 ];
 
 
-function Projects() {
-    return (
-        <section className={styles.section}>
-            <h2 className={styles.mainTitle}>Mes Derniers Projets</h2>
-            {categories.map((category, index) => (
-                <CategorySection key={index} category={category} />
-            ))}
-        </section>
-    );
-}
-
-
-
 function ProjectCard({ title, description, techs, image, liveLink, githubLink }) {
     return (
         <div className={styles.projectCard}>
@@ -109,5 +96,18 @@ function CategorySection({ category }) {
         </div>
     );
 }
+
+
+const Projects = forwardRef((props, ref) => {
+    return (
+        <section className={styles.section} ref={ref}>
+            <h2 className={styles.mainTitle}>Mes Derniers Projets</h2>
+            {categories.map((category, index) => (
+                <CategorySection key={index} category={category} />
+            ))}
+        </section>
+    );
+})
+
 
 export default Projects

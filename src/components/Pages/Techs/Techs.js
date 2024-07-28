@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, forwardRef } from 'react'
 import styles from './Techs.module.css';
 
 import { Home as HomeIcon } from "../../Icons/";
@@ -72,15 +72,15 @@ function SkillCategory({ category }) {
     );
 }
 
-function Techs() {
+const Techs = forwardRef((props, ref) => {
     return (
-        <section className={styles.skillsSection}>
+        <section className={styles.skillsSection} ref={ref}>
             <h1 className={styles.mainTitle}>Mes Compétences Techniques</h1>
             {skillsData.map((category) => (
                 <SkillCategory key={category.name} category={category} />
             ))}
         </section>
     );
-}
+})
 
 export default Techs
